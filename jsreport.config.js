@@ -1,5 +1,5 @@
-﻿module.exports = {
-  "name": "resources",
-  "main": "lib/resources.js",
-  "dependencies": [ "data" ]
+module.exports = {
+  'name': 'resources',
+  'main': 'lib/resources.js',
+  'dependencies': [ 'data' ]
 }
