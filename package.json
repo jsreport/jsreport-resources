@@ -5,6 +5,11 @@
   "scripts": {
     "test": "mocha test && standard"
   },
+  "homepage": "https://github.com/jsreport/jsreport-resources",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jsreport/jsreport-resources.git"
+  },
   "standard": {
     "ignore": [
       "public/**"
@@ -18,13 +23,12 @@
     ]
   },
   "keywords": [
-    "jsreport",
-    "analytics"
+    "jsreport"
   ],
   "license": "LGPL",
   "dependencies": {
-    "q": "^1.4.1",
-    "string": "^3.3.1"
+    "q": "1.4.1",
+    "string": "3.3.1"
   },
   "author": "Jan Blaha",
   "devDependencies": {
