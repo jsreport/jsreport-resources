@@ -18,7 +18,7 @@ describe('with resources extension', function () {
   it('should parse resource into the options.resources collection', function (done) {
     reporter.documentStore.collection('data').insert({
       name: 'foo',
-      dataJson: '{ \"foo\": \"x\"}'
+      dataJson: '{ "foo": "x"}'
     }).then(function (data) {
       var template = {
         resources: {
@@ -50,7 +50,7 @@ describe('with resources extension', function () {
   it('should parse resource based on language into localizedResource', function (done) {
     reporter.documentStore.collection('data').insert({
       name: 'en-foo',
-      dataJson: '{ \"foo\": \"x\"}'
+      dataJson: '{ "foo": "x"}'
     }).then(function (data) {
       var template = {
         resources: {
@@ -71,11 +71,11 @@ describe('with resources extension', function () {
   it('should parse resource based on language into localizedResource by names when multiple resources are applicable', function (done) {
     reporter.documentStore.collection('data').insert({
       name: 'en-data1',
-      dataJson: '{ \"foo\": \"x\"}'
+      dataJson: '{ "foo": "x"}'
     }).then(function (data) {
       return reporter.documentStore.collection('data').insert({
         name: 'en-data2',
-        dataJson: '{ \"foo2\": \"x\"}'
+        dataJson: '{ "foo2": "x"}'
       }).then(function (data2) {
         var template = {
           resources: {

@@ -1,9 +1,11 @@
 {
   "name": "jsreport-resources",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "jsreport extension adding localization capabilities",
   "scripts": {
-    "test": "mocha test && standard"
+    "test": "mocha test && standard",
+    "build": "npm run prepublish",
+    "prepublish": "in-publish && jsreport-studio-build || not-in-publish"
   },
   "homepage": "https://github.com/jsreport/jsreport-resources",
   "repository": {
@@ -12,32 +14,36 @@
   },
   "standard": {
     "ignore": [
-      "public/**"
+      "main.js"
     ],
-    "globals": [
-      "describe",
-      "it",
-      "beforeEach",
-      "define",
-      "ace"
-    ]
+    "parser": "babel-eslint",
+    "env": {
+      "node": true,
+      "mocha": true,
+      "browser": true
+    }
   },
   "keywords": [
     "jsreport"
   ],
   "license": "LGPL",
   "dependencies": {
+    "in-publish": "2.0.0",
     "q": "1.4.1",
     "string": "3.3.1"
   },
   "author": "Jan Blaha",
   "devDependencies": {
-    "eslint": "^1.9.0",
-    "mocha": "^2.3.3",
-    "should": "^7.1.1",
-    "standard": "^5.3.1",
+    "babel-eslint": "6.0.4",
+    "eslint": "2.11.1",
+    "eslint-config-standard-jsx": "1.2.1",
+    "eslint-plugin-babel": "3.2.0",
     "jsreport-core": "*",
     "jsreport-data": "*",
-    "jsreport-templates": "*"
+    "jsreport-studio-dev": "0.2.8",
+    "jsreport-templates": "*",
+    "mocha": "2.5.3",
+    "should": "9.0.2",
+    "standard": "7.1.2"
   }
 }
