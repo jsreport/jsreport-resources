@@ -26,7 +26,7 @@ describe('with resources extension', function () {
         }
       }
 
-      var request = {template: template, options: {}, data: {}}
+      var request = {template: template, options: {}, data: {}, logger: reporter.logger}
       return reporter.resources.handleBeforeRender(request, {}).then(function (response) {
         request.options.should.have.property('resources')
         request.options.resources.should.have.length(1)
@@ -58,7 +58,7 @@ describe('with resources extension', function () {
         }
       }
 
-      var request = {template: template, options: {language: 'en'}, data: {}}
+      var request = {template: template, options: {language: 'en'}, data: {}, logger: reporter.logger}
       return reporter.resources.handleBeforeRender(request, {}).then(function (response) {
         request.data.should.have.property('$localizedResource')
         request.data.$localizedResource.should.have.property('foo')
@@ -86,7 +86,7 @@ describe('with resources extension', function () {
           }
         }
 
-        var request = {template: template, options: {language: 'en'}, data: {}}
+        var request = {template: template, options: {language: 'en'}, data: {}, logger: reporter.logger}
         return reporter.resources.handleBeforeRender(request, {}).then(function (response) {
           request.data.should.have.property('$localizedResource')
           request.data.$localizedResource.should.have.property('data1')
