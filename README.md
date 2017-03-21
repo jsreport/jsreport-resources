@@ -4,13 +4,13 @@
 
 > jsreport extension adding localization capabilities
 
-See http://jsreport.net/learn/resources
+See https://jsreport.net/learn/resources
 
 
-##Installation
+## Installation
 > npm install jsreport-resources
 
-##jsreport-core
+## jsreport-core
 You can apply this extension also manually to [jsreport-core](https://github.com/jsreport/jsreport-resources)
 
 ```js
