@@ -28,7 +28,7 @@
   ],
   "license": "LGPL",
   "dependencies": {
-    "q": "1.4.1",
+    "bluebird": "3.5.0",
     "string": "3.3.1"
   },
   "author": "Jan Blaha",
