@@ -38,15 +38,18 @@
     "eslint-config-standard-jsx": "1.2.1",
     "eslint-plugin-babel": "3.2.0",
     "in-publish": "2.0.0",
-    "jsreport-core": "1.0.4",
-    "jsreport-data": "1.0.1",
-    "jsreport-studio-dev": "1.0.0",
-    "jsreport-templates": "1.0.1",
+    "jsreport-core": "1.3.0",
+    "jsreport-data": "1.1.2",
+    "jsreport-studio-dev": "1.1.0",
+    "jsreport-templates": "1.1.0",
     "mocha": "2.5.3",
     "should": "9.0.2",
     "standard": "7.1.2"
   },
   "files": [
-    "lib", "studio", "index.js", "jsreport.config.js"
+    "lib",
+    "studio",
+    "index.js",
+    "jsreport.config.js"
   ]
 }
