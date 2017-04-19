@@ -12,7 +12,7 @@ describe('with resources extension', function () {
 
     reporter.init().then(function () {
       done()
-    }).fail(done)
+    }).catch(done)
   })
 
   it('should parse resource into the options.resources collection', function (done) {
