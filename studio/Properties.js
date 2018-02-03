@@ -54,7 +54,7 @@ export default class Properties extends Component {
 
     const selectValues = (event, aitems) => {
       const el = event.target
-      let items = Object.assign([], items)
+      let items = []
 
       for (var i = 0; i < el.options.length; i++) {
         if (el.options[i].selected) {
@@ -93,4 +93,3 @@ export default class Properties extends Component {
     )
   }
 }
-

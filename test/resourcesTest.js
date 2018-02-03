@@ -1,102 +1,117 @@
 require('should')
-var path = require('path')
-var Reporter = require('jsreport-core').Reporter
+const jsreport = require('jsreport-core')
+const resources = require('../')
+const data = require('jsreport-data')
+const templates = require('jsreport-templates')
 
-describe('with resources extension', function () {
-  var reporter
+describe('with resources extension', () => {
+  let reporter
 
-  beforeEach(function (done) {
-    reporter = new Reporter({
-      rootDirectory: path.join(__dirname, '../')
-    })
+  beforeEach(() => {
+    reporter = jsreport({ tasks: { strategy: 'in-process' } })
+    reporter.use(templates())
+    reporter.use(data())
+    reporter.use(resources())
 
-    reporter.init().then(function () {
-      done()
-    }).catch(done)
+    return reporter.init()
   })
 
-  it('should parse resource into the options.resources collection', function (done) {
-    reporter.documentStore.collection('data').insert({
+  it('should parse resource into the options.resources collection', async () => {
+    const data = await reporter.documentStore.collection('data').insert({
       name: 'foo',
       dataJson: '{ "foo": "x"}'
-    }).then(function (data) {
-      var template = {
+    })
+
+    const request = {
+      template: {
+        content: ' ',
+        engine: 'none',
+        recipe: 'html',
         resources: {
           items: [{shortid: data.shortid, entitySet: 'data'}]
         }
       }
+    }
 
-      var request = {template: template, options: {}, data: {}, logger: reporter.logger}
-      return reporter.resources.handleBeforeRender(request, {}).then(function (response) {
-        request.options.should.have.property('resources')
-        request.options.resources.should.have.length(1)
+    let beforeRenderRequest
+    reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
+    await reporter.render(request, {})
 
-        request.data.should.have.property('$resources')
-        request.data['$resources'].should.have.length(1)
+    beforeRenderRequest.options.should.have.property('resources')
+    beforeRenderRequest.options.resources.should.have.length(1)
 
-        request.options.should.have.property('resource')
-        request.options.resource.should.have.property('foo')
-        request.options.resource.foo.should.have.property('foo')
+    beforeRenderRequest.data.should.have.property('$resources')
+    beforeRenderRequest.data['$resources'].should.have.length(1)
 
-        request.data.should.have.property('$resource')
-        request.data['$resource'].should.have.property('foo')
-        request.data['$resource'].foo.should.have.property('foo')
+    beforeRenderRequest.options.should.have.property('resource')
+    beforeRenderRequest.options.resource.should.have.property('foo')
+    beforeRenderRequest.options.resource.foo.should.have.property('foo')
 
-        done()
-      })
-    }).catch(done)
+    beforeRenderRequest.data.should.have.property('$resource')
+    beforeRenderRequest.data['$resource'].should.have.property('foo')
+    beforeRenderRequest.data['$resource'].foo.should.have.property('foo')
   })
 
-  it('should parse resource based on language into localizedResource', function (done) {
-    reporter.documentStore.collection('data').insert({
+  it('should parse resource based on language into localizedResource', async () => {
+    const data = await reporter.documentStore.collection('data').insert({
       name: 'en-foo',
       dataJson: '{ "foo": "x"}'
-    }).then(function (data) {
-      var template = {
+    })
+    const request = {
+      template: {
+        content: ' ',
+        recipe: 'html',
+        engine: 'none',
         resources: {
           items: [{shortid: data.shortid, entitySet: 'data'}]
         }
-      }
+      },
+      data: {},
+      options: {language: 'en'}
+    }
 
-      var request = {template: template, options: {language: 'en'}, data: {}, logger: reporter.logger}
-      return reporter.resources.handleBeforeRender(request, {}).then(function (response) {
-        request.data.should.have.property('$localizedResource')
-        request.data.$localizedResource.should.have.property('foo')
+    let beforeRenderRequest
+    reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
+    await reporter.render(request, {})
 
-        done()
-      })
-    }).catch(done)
+    beforeRenderRequest.data.should.have.property('$localizedResource')
+    beforeRenderRequest.data.$localizedResource.should.have.property('foo')
   })
 
-  it('should parse resource based on language into localizedResource by names when multiple resources are applicable', function (done) {
-    reporter.documentStore.collection('data').insert({
+  it('should parse resource based on language into localizedResource by names when multiple resources are applicable', async () => {
+    const data = await reporter.documentStore.collection('data').insert({
       name: 'en-data1',
       dataJson: '{ "foo": "x"}'
-    }).then(function (data) {
-      return reporter.documentStore.collection('data').insert({
-        name: 'en-data2',
-        dataJson: '{ "foo2": "x"}'
-      }).then(function (data2) {
-        var template = {
-          resources: {
-            items: [
-              {shortid: data.shortid, entitySet: 'data'},
-              {shortid: data2.shortid, entitySet: 'data'}
-            ]
-          }
+    })
+
+    const data2 = await reporter.documentStore.collection('data').insert({
+      name: 'en-data2',
+      dataJson: '{ "foo2": "x"}'
+    })
+    const request = {
+      template: {
+        content: ' ',
+        engine: 'none',
+        recipe: 'html',
+        resources: {
+          items: [
+            {shortid: data.shortid, entitySet: 'data'},
+            {shortid: data2.shortid, entitySet: 'data'}
+          ]
         }
+      },
+      options: {language: 'en'},
+      data: {}
+    }
 
-        var request = {template: template, options: {language: 'en'}, data: {}, logger: reporter.logger}
-        return reporter.resources.handleBeforeRender(request, {}).then(function (response) {
-          request.data.should.have.property('$localizedResource')
-          request.data.$localizedResource.should.have.property('data1')
-          request.data.$localizedResource.should.have.property('data2')
-          request.data.$localizedResource.data1.should.have.property('foo')
-          request.data.$localizedResource.data2.should.have.property('foo2')
+    let beforeRenderRequest
+    reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
+    await reporter.render(request, {})
 
-          done()
-        })
-      })
-    }).catch(done)
+    beforeRenderRequest.data.should.have.property('$localizedResource')
+    beforeRenderRequest.data.$localizedResource.should.have.property('data1')
+    beforeRenderRequest.data.$localizedResource.should.have.property('data2')
+    beforeRenderRequest.data.$localizedResource.data1.should.have.property('foo')
+    beforeRenderRequest.data.$localizedResource.data2.should.have.property('foo2')
   })
 })
