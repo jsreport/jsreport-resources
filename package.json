@@ -4,7 +4,7 @@
   "description": "jsreport extension adding localization capabilities",
   "scripts": {
     "test": "mocha test --timeout 10000 && standard",
-    "build": "npm run prepublish",
+    "build": "jsreport-studio-build",
     "prepublish": "in-publish && jsreport-studio-build || not-in-publish"
   },
   "homepage": "https://github.com/jsreport/jsreport-resources",
