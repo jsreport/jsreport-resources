@@ -140,7 +140,7 @@
 	      });
 	
 	      if (updatedResources.length !== entity.resources.items.length) {
-	        onChange({ _id: entity._id, resources: { defaultLanguage: entity.defaultLanguage, items: updatedResources } });
+	        onChange({ _id: entity._id, resources: { defaultLanguage: entity.resources.defaultLanguage, items: updatedResources } });
 	      }
 	    }
 	  }, {

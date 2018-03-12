@@ -44,7 +44,7 @@ export default class Properties extends Component {
     const updatedResources = entity.resources.items.filter((s) => Object.keys(entities).filter((k) => entities[k].__entitySet === 'data' && entities[k].shortid === s.shortid).length)
 
     if (updatedResources.length !== entity.resources.items.length) {
-      onChange({ _id: entity._id, resources: { defaultLanguage: entity.defaultLanguage, items: updatedResources } })
+      onChange({ _id: entity._id, resources: { defaultLanguage: entity.resources.defaultLanguage, items: updatedResources } })
     }
   }
 
