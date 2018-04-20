@@ -35,7 +35,7 @@ describe('with resources extension', () => {
 
     let beforeRenderRequest
     reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
-    await reporter.render(request, {})
+    await reporter.render(request)
 
     beforeRenderRequest.options.should.have.property('resources')
     beforeRenderRequest.options.resources.should.have.length(1)
@@ -72,7 +72,7 @@ describe('with resources extension', () => {
 
     let beforeRenderRequest
     reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
-    await reporter.render(request, {})
+    await reporter.render(request)
 
     beforeRenderRequest.data.should.have.property('$localizedResource')
     beforeRenderRequest.data.$localizedResource.should.have.property('foo')
@@ -106,7 +106,7 @@ describe('with resources extension', () => {
 
     let beforeRenderRequest
     reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
-    await reporter.render(request, {})
+    await reporter.render(request)
 
     beforeRenderRequest.data.should.have.property('$localizedResource')
     beforeRenderRequest.data.$localizedResource.should.have.property('data1')
