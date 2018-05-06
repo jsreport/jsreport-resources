@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import Studio from 'jsreport-studio'
+
+const MultiSelect = Studio.MultiSelect
 
 export default class Properties extends Component {
   selectData (entities) {
@@ -44,7 +47,7 @@ export default class Properties extends Component {
     const updatedResources = entity.resources.items.filter((s) => Object.keys(entities).filter((k) => entities[k].__entitySet === 'data' && entities[k].shortid === s.shortid).length)
 
     if (updatedResources.length !== entity.resources.items.length) {
-      onChange({ _id: entity._id, resources: { defaultLanguage: entity.defaultLanguage, items: updatedResources } })
+      onChange({ _id: entity._id, resources: { defaultLanguage: entity.resources.defaultLanguage, items: updatedResources } })
     }
   }
 
@@ -52,18 +55,20 @@ export default class Properties extends Component {
     const { entity, entities, onChange } = this.props
     const data = this.selectData(entities)
 
-    const selectValues = (event, aitems) => {
-      const el = event.target
-      let items = Object.assign([], items)
+    const selectValues = (selectData) => {
+      const { value: selectedValue, options } = selectData
+      let items = []
 
-      for (var i = 0; i < el.options.length; i++) {
-        if (el.options[i].selected) {
-          if (!items.filter((s) => s.shortid === el.options[i].value).length) {
-            items.push({ shortid: el.options[i].value })
+      for (var i = 0; i < options.length; i++) {
+        const optionIsSelected = selectedValue.indexOf(options[i].value) !== -1
+
+        if (optionIsSelected) {
+          if (!items.filter((s) => s.shortid === options[i].value).length) {
+            items.push({ shortid: options[i].value })
           }
         } else {
-          if (items.filter((s) => s.shortid === el.options[i].value).length) {
-            items = items.filter((s) => s.shortid !== el.options[i].value)
+          if (items.filter((s) => s.shortid === options[i].value).length) {
+            items = items.filter((s) => s.shortid !== options[i].value)
           }
         }
       }
@@ -82,15 +87,15 @@ export default class Properties extends Component {
             onChange={(v) => onChange({_id: entity._id, resources: {defaultLanguage: v.target.value, items: items}})} />
         </div>
         <div className='form-group'>
-          <select
-            title='Use CTRL to deselect item and also to select multiple options'
-            multiple size='7' value={items.map((s) => s.shortid)}
-            onChange={(v) => onChange({_id: entity._id, resources: {items: selectValues(v, entity.scripts), defaultLanguage: defaultLanguage}})}>
-            {data.map((s) => <option key={s.shortid} value={s.shortid}>{s.name}</option>)}
-          </select>
+          <MultiSelect
+            title='Use the checkboxes to select/deselect multiple options'
+            size={7}
+            value={items.map((s) => s.shortid)}
+            onChange={(selectData) => onChange({ _id: entity._id, resources: { items: selectValues(selectData), defaultLanguage: defaultLanguage } })}
+            options={data.map(d => ({ key: d.shortid, name: d.name, value: d.shortid }))}
+          />
         </div>
       </div>
     )
   }
 }
-
