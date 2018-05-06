@@ -46,7 +46,7 @@
     "standard": "10.0.3"
   },
   "engines": {
-    "node": ">=8.0"
+    "node": ">=8.9"
   },
   "files": [
     "lib",
