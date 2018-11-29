@@ -114,4 +114,103 @@ describe('with resources extension', () => {
     beforeRenderRequest.data.$localizedResource.data1.should.have.property('foo')
     beforeRenderRequest.data.$localizedResource.data2.should.have.property('foo2')
   })
+
+  it('should parse resource into the options.resources collection searching data by name', async () => {
+    await reporter.documentStore.collection('data').insert({
+      name: 'foo',
+      dataJson: '{ "foo": "x"}'
+    })
+
+    const request = {
+      template: {
+        content: ' ',
+        engine: 'none',
+        recipe: 'html',
+        resources: {
+          items: [{name: 'foo', entitySet: 'data'}]
+        }
+      }
+    }
+
+    let beforeRenderRequest
+    reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
+    await reporter.render(request)
+
+    beforeRenderRequest.options.should.have.property('resources')
+    beforeRenderRequest.options.resources.should.have.length(1)
+
+    beforeRenderRequest.data.should.have.property('$resources')
+    beforeRenderRequest.data['$resources'].should.have.length(1)
+
+    beforeRenderRequest.options.should.have.property('resource')
+    beforeRenderRequest.options.resource.should.have.property('foo')
+    beforeRenderRequest.options.resource.foo.should.have.property('foo')
+
+    beforeRenderRequest.data.should.have.property('$resource')
+    beforeRenderRequest.data['$resource'].should.have.property('foo')
+    beforeRenderRequest.data['$resource'].foo.should.have.property('foo')
+  })
+
+  it('should parse resource based on language into localizedResource searching data by name', async () => {
+    await reporter.documentStore.collection('data').insert({
+      name: 'en-foo',
+      dataJson: '{ "foo": "x"}'
+    })
+    const request = {
+      template: {
+        content: ' ',
+        recipe: 'html',
+        engine: 'none',
+        resources: {
+          items: [{name: 'en-foo', entitySet: 'data'}]
+        }
+      },
+      data: {},
+      options: {language: 'en'}
+    }
+
+    let beforeRenderRequest
+    reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
+    await reporter.render(request)
+
+    beforeRenderRequest.data.should.have.property('$localizedResource')
+    beforeRenderRequest.data.$localizedResource.should.have.property('foo')
+  })
+
+  it('should parse resource based on language into localizedResource by names when multiple resources are applicable searching data by name', async () => {
+    await reporter.documentStore.collection('data').insert({
+      name: 'en-data1',
+      dataJson: '{ "foo": "x"}'
+    })
+
+    await reporter.documentStore.collection('data').insert({
+      name: 'en-data2',
+      dataJson: '{ "foo2": "x"}'
+    })
+    const request = {
+      template: {
+        content: ' ',
+        engine: 'none',
+        recipe: 'html',
+        resources: {
+          items: [
+            {name: 'en-data1', entitySet: 'data'},
+            {name: 'en-data2', entitySet: 'data'}
+          ]
+        }
+      },
+      options: {language: 'en'},
+      data: {}
+    }
+
+    let beforeRenderRequest
+    reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
+    await reporter.render(request)
+
+    beforeRenderRequest.data.should.have.property('$localizedResource')
+    beforeRenderRequest.data.$localizedResource.should.have.property('data1')
+    beforeRenderRequest.data.$localizedResource.should.have.property('data2')
+    beforeRenderRequest.data.$localizedResource.data1.should.have.property('foo')
+    beforeRenderRequest.data.$localizedResource.data2.should.have.property('foo2')
+  })
 })
