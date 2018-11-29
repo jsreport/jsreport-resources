@@ -214,32 +214,6 @@ describe('with resources extension', () => {
     beforeRenderRequest.data['$resource'].foo.should.have.property('foo')
   })
 
-  it('should parse resource based on language into localizedResource searching data by name', async () => {
-    await reporter.documentStore.collection('data').insert({
-      name: 'en-foo',
-      dataJson: '{ "foo": "x"}'
-    })
-    const request = {
-      template: {
-        content: ' ',
-        recipe: 'html',
-        engine: 'none',
-        resources: {
-          items: [{name: 'en-foo', entitySet: 'data'}]
-        }
-      },
-      data: {},
-      options: {language: 'en'}
-    }
-
-    let beforeRenderRequest
-    reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
-    await reporter.render(request)
-
-    beforeRenderRequest.data.should.have.property('$localizedResource')
-    beforeRenderRequest.data.$localizedResource.should.have.property('foo')
-  })
-
   it('should parse resource based on language into localizedResource by names when multiple resources are applicable searching data by name', async () => {
     await reporter.documentStore.collection('data').insert({
       name: 'en-data1',
@@ -275,5 +249,31 @@ describe('with resources extension', () => {
     beforeRenderRequest.data.$localizedResource.should.have.property('data2')
     beforeRenderRequest.data.$localizedResource.data1.should.have.property('foo')
     beforeRenderRequest.data.$localizedResource.data2.should.have.property('foo2')
+  })
+
+  it('should parse resource based on language into localizedResource searching data by name', async () => {
+    await reporter.documentStore.collection('data').insert({
+      name: 'en-foo',
+      dataJson: '{ "foo": "x"}'
+    })
+    const request = {
+      template: {
+        content: ' ',
+        recipe: 'html',
+        engine: 'none',
+        resources: {
+          items: [{name: 'en-foo', entitySet: 'data'}]
+        }
+      },
+      data: {},
+      options: {language: 'en'}
+    }
+
+    let beforeRenderRequest
+    reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
+    await reporter.render(request)
+
+    beforeRenderRequest.data.should.have.property('$localizedResource')
+    beforeRenderRequest.data.$localizedResource.should.have.property('foo')
   })
 })
