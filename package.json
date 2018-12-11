@@ -1,6 +1,6 @@
 {
   "name": "jsreport-resources",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "jsreport extension adding localization capabilities",
   "scripts": {
     "test": "mocha test --timeout 10000 && standard",
