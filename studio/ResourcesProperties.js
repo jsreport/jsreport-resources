@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import Studio from 'jsreport-studio'
 
-const MultiSelect = Studio.MultiSelect
+const EntityRefSelect = Studio.EntityRefSelect
 
-export default class Properties extends Component {
-  selectData (entities) {
-    return Object.keys(entities).filter((k) => entities[k].__entitySet === 'data').map((k) => entities[k])
-  }
+const selectValues = (selected) => {
+  return selected.map((e) => ({ shortid: e.shortid, entitySet: 'data' }))
+}
 
+export default class ResourcesProperties extends Component {
   static getSelectedResources (entity, entities) {
     const getName = (s) => {
       const foundData = Object.keys(entities).map((k) => entities[k]).filter((sc) => sc.shortid === s.shortid)
@@ -34,7 +34,7 @@ export default class Properties extends Component {
       return 'resources'
     }
 
-    return `resources: ${entity.resources.defaultLanguage || ''} ` + Properties.getSelectedResources(entity, entities).map((s) => s.name).join(', ')
+    return `resources: ${entity.resources.defaultLanguage || ''} ` + ResourcesProperties.getSelectedResources(entity, entities).map((s) => s.name).join(', ')
   }
 
   removeInvalidDataReferences () {
@@ -52,30 +52,7 @@ export default class Properties extends Component {
   }
 
   render () {
-    const { entity, entities, onChange } = this.props
-    const data = this.selectData(entities)
-
-    const selectValues = (selectData) => {
-      const { value: selectedValue, options } = selectData
-      let items = []
-
-      for (var i = 0; i < options.length; i++) {
-        const optionIsSelected = selectedValue.indexOf(options[i].value) !== -1
-
-        if (optionIsSelected) {
-          if (!items.filter((s) => s.shortid === options[i].value).length) {
-            items.push({ shortid: options[i].value })
-          }
-        } else {
-          if (items.filter((s) => s.shortid === options[i].value).length) {
-            items = items.filter((s) => s.shortid !== options[i].value)
-          }
-        }
-      }
-
-      return items.map((i) => ({ ...i, entitySet: 'data' }))
-    }
-
+    const { entity, onChange } = this.props
     const items = (entity.resources || {}).items || []
     const defaultLanguage = (entity.resources || {}).defaultLanguage
 
@@ -87,12 +64,12 @@ export default class Properties extends Component {
             onChange={(v) => onChange({_id: entity._id, resources: {defaultLanguage: v.target.value, items: items}})} />
         </div>
         <div className='form-group'>
-          <MultiSelect
-            title='Use the checkboxes to select/deselect multiple options'
-            size={7}
+          <EntityRefSelect
+            headingLabel='Select data'
+            filter={(references) => ({ data: references.data })}
             value={items.map((s) => s.shortid)}
-            onChange={(selectData) => onChange({ _id: entity._id, resources: { items: selectValues(selectData), defaultLanguage: defaultLanguage } })}
-            options={data.map(d => ({ key: d.shortid, name: d.name, value: d.shortid }))}
+            onChange={(selected) => onChange({ _id: entity._id, resources: { items: selectValues(selected), defaultLanguage: defaultLanguage } })}
+            multiple
           />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import Properties from './Properties.js'
+import ResourcesProperties from './ResourcesProperties.js'
 import Studio from 'jsreport-studio'
 
 Studio.addApiSpec({
@@ -7,4 +7,4 @@ Studio.addApiSpec({
   }
 })
 
-Studio.addPropertiesComponent(Properties.title, Properties, (entity) => entity.__entitySet === 'templates')
+Studio.addPropertiesComponent(ResourcesProperties.title, ResourcesProperties, (entity) => entity.__entitySet === 'templates')
