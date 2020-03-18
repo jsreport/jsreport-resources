@@ -28,6 +28,8 @@ node_modules
 
 .idea
 
+data
+
 # temporary include
-studio/main.js
-studio/main.js.map
+# studio/main.js
+# studio/main.js.map

@@ -78,6 +78,32 @@ describe('with resources extension', () => {
     beforeRenderRequest.data.$localizedResource.should.have.property('foo')
   })
 
+  it('should parse resource based on default language into localizedResource', async () => {
+    const data = await reporter.documentStore.collection('data').insert({
+      name: 'en-foo',
+      dataJson: '{ "foo": "x"}'
+    })
+    const request = {
+      template: {
+        content: ' ',
+        recipe: 'html',
+        engine: 'none',
+        resources: {
+          items: [{shortid: data.shortid, entitySet: 'data'}],
+          defaultLanguage: 'en'
+        }
+      },
+      data: {}
+    }
+
+    let beforeRenderRequest
+    reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
+    await reporter.render(request)
+
+    beforeRenderRequest.data.should.have.property('$localizedResource')
+    beforeRenderRequest.data.$localizedResource.should.have.property('foo')
+  })
+
   it('should parse resource based on language into localizedResource by names when multiple resources are applicable', async () => {
     const data = await reporter.documentStore.collection('data').insert({
       name: 'en-data1',
@@ -101,6 +127,43 @@ describe('with resources extension', () => {
         }
       },
       options: {language: 'en'},
+      data: {}
+    }
+
+    let beforeRenderRequest
+    reporter.beforeRenderListeners.add('test', (req) => (beforeRenderRequest = req))
+    await reporter.render(request)
+
+    beforeRenderRequest.data.should.have.property('$localizedResource')
+    beforeRenderRequest.data.$localizedResource.should.have.property('data1')
+    beforeRenderRequest.data.$localizedResource.should.have.property('data2')
+    beforeRenderRequest.data.$localizedResource.data1.should.have.property('foo')
+    beforeRenderRequest.data.$localizedResource.data2.should.have.property('foo2')
+  })
+
+  it('should parse resource based on default language into localizedResource by names when multiple resources are applicable', async () => {
+    const data = await reporter.documentStore.collection('data').insert({
+      name: 'en-data1',
+      dataJson: '{ "foo": "x"}'
+    })
+
+    const data2 = await reporter.documentStore.collection('data').insert({
+      name: 'en-data2',
+      dataJson: '{ "foo2": "x"}'
+    })
+    const request = {
+      template: {
+        content: ' ',
+        engine: 'none',
+        recipe: 'html',
+        resources: {
+          items: [
+            {shortid: data.shortid, entitySet: 'data'},
+            {shortid: data2.shortid, entitySet: 'data'}
+          ],
+          defaultLanguage: 'en'
+        }
+      },
       data: {}
     }
 
